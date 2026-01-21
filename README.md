@@ -149,8 +149,12 @@ Siga os passos abaixo para configurar e executar o projeto em seu ambiente de de
     ```bash
     npx prisma generate
     ```
-
-6.  **Execute a Aplicação:**
+6. **Crie um arquivo .env**
+   Crie um arquivo .env contendo:
+   DATABASE_URL="postgresql://postgres:postgres@localhost:5433/postgres"
+   Para conectar banco de dados
+    
+7.  **Execute a Aplicação:**
     Agora você pode iniciar o servidor de desenvolvimento do Next.js.
     ```bash
     npm run dev
