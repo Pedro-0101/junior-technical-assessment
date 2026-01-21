@@ -32,7 +32,9 @@ export function EditCategoryModal({
     },
   ];
 
-  const handleSubmit = (data: z.infer<typeof updateCategoriaSchema>) => {
+  const formSchema = updateCategoriaSchema.omit({ id: true });
+
+  const handleSubmit = (data: z.infer<typeof formSchema>) => {
     if (!category?.id) return;
     updateCategoryMutation.mutate(
       { ...data, id: category.id },
@@ -57,7 +59,7 @@ export function EditCategoryModal({
     >
       {category && (
         <DynamicForm
-          schema={updateCategoriaSchema}
+          schema={formSchema}
           onSubmit={handleSubmit}
           defaultValues={{
             nome: category.nome,
