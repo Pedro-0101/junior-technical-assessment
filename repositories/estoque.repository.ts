@@ -11,7 +11,7 @@ export const findById = async (id: bigint): Promise<estoque | null> => {
     });
 };
 
-export const create = async (data: Omit<estoque, 'id' | 'criado_em'>): Promise<estoque> => {
+export const create = async (data: Omit<estoque, 'id' | 'atualizado_em'>): Promise<estoque> => {
     return prisma.estoque.create({
         data: {
             id_produto: data.id_produto,
@@ -20,7 +20,7 @@ export const create = async (data: Omit<estoque, 'id' | 'criado_em'>): Promise<e
     });
 };
 
-export const update = async (id: bigint, data: Partial<Omit<estoque, 'id' | 'criado_em'>>): Promise<estoque> => {
+export const update = async (id: bigint, data: Partial<Omit<estoque, 'id' | 'atualizado_em'>>): Promise<estoque> => {
     return prisma.estoque.update({
         where: { id },
         data,
