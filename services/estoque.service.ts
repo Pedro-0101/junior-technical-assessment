@@ -1,5 +1,6 @@
 import * as repository from '@/repositories/estoque.repository';
 import { estoque } from '@/generated/prisma/client';
+import * as produtoService from '@/services/produtos.service';
 
 export const getAllEstoque = async (): Promise<estoque[]> => {
   return repository.findAll();
@@ -10,9 +11,23 @@ export const getEstoqueById = async (id: bigint): Promise<estoque | null> => {
 };
 
 export const createEstoque = async (data: Omit<estoque, 'id' | 'atualizado_em'>): Promise<estoque> => {
-    const { estoque_id, quantidade } = data;
-    const newEstoque = await repository.create({ estoque_id, quantidade });
-    return newEstoque;
+  const { produto_id, quantidade } = data;
+
+  if (!produto_id || !quantidade) {
+    throw new Error('Produto ID e quantidade são obrigatórios');
+  }
+  
+  if (quantidade <= 0) {
+    throw new Error('Quantidade deve ser maior que zero');
+  }
+
+  const produto = produtoService.getProdutoById(produto_id);
+  if (!produto) {
+    throw new Error('Produto não encontrado');
+  }
+
+  const newEstoque = await repository.create({ produto_id, quantidade });
+  return newEstoque;
 };
 
 export const updateEstoque = async (id: bigint, data: Partial<Omit<estoque, 'id' | 'atualizado_em'>>): Promise<estoque> => {
@@ -21,4 +36,8 @@ export const updateEstoque = async (id: bigint, data: Partial<Omit<estoque, 'id'
 
 export const deleteEstoque = async (id: bigint): Promise<estoque> => {
   return repository.remove(id);
+};
+
+export const getEstoqueByProdutoId = async (produtoId: bigint): Promise<estoque | null> => {
+  return repository.findByProdutoId(produtoId);
 };
