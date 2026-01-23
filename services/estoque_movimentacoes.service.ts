@@ -35,6 +35,14 @@ export const createEstoqueMovimentacoes = async (data: Omit<estoque_movimentacoe
     }
 
     const newEstoqueMovimentacoes = await repository.create({ produto_id, quantidade, tipo });
+
+    if(newEstoqueMovimentacoes.tipo === 'entrada') {
+      await estoqueService.updateEstoque(estoqueProduto.id, { quantidade: estoqueProduto.quantidade + quantidade });
+    }
+    if(newEstoqueMovimentacoes.tipo === 'saida') {
+      await estoqueService.updateEstoque(estoqueProduto.id, { quantidade: estoqueProduto.quantidade - quantidade });
+    }
+
     return newEstoqueMovimentacoes;
 };
 
