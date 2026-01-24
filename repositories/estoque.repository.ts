@@ -49,6 +49,6 @@ export const remove = async (id: bigint): Promise<estoque> => {
 
 export const findByProdutoId = async (produtoId: bigint): Promise<estoque | null> => {
     return prisma.estoque.findFirst({
-        where: { id_produto: produtoId },
+        where: { produto_id: produtoId },
     });
 };

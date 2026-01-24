@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useEffect } from "react";
 
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ interface DynamicFormProps<T extends z.ZodType<any, any, any>> {
   }>;
   submitButtonText?: string;
   isSubmitting?: boolean;
+  onValuesChange?: (values: z.infer<T>) => void;
 }
 
 export function DynamicForm<T extends z.ZodType<any, any, any>>({
@@ -30,11 +32,22 @@ export function DynamicForm<T extends z.ZodType<any, any, any>>({
   fields,
   submitButtonText = "Submit",
   isSubmitting = false,
+  onValuesChange,
 }: DynamicFormProps<T>) {
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: defaultValues as any,
   });
+
+  const formValues = useWatch({
+    control: form.control,
+  });
+
+  useEffect(() => {
+    if (onValuesChange) {
+      onValuesChange(formValues as z.infer<T>);
+    }
+  }, [formValues, onValuesChange]);
 
   return (
     <Form {...form}>

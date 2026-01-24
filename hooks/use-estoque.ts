@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as z from "zod";
+import { id } from "zod/v4/locales";
 
 // Zod Schemas
-// Geralmente, o estoque é atualizado via ajuste de quantidade
 export const updateEstoqueSchema = z.object({
   id: z.string(),
   quantidade: z.number().min(0, "A quantidade não pode ser negativa"),
@@ -50,6 +50,16 @@ const updateEstoque = async (
   return response.json();
 };
 
+export const getEstoqueByProdutoId = async (productid: string) => {
+  const response = await fetch(`/api/estoque/produtos/${productid}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch inventory with ID ${id}`);
+  }
+  return response.json();
+}
+
+// React Query Hooks
+
 export const useEstoque = () => {
   return useQuery<EstoqueItem[], Error>({
     queryKey: ["estoque"],
@@ -57,13 +67,20 @@ export const useEstoque = () => {
   });
 };
 
+export const useEstoqueByProductId = (id: string) => {
+  return useQuery<EstoqueItem, Error>({
+    queryKey: ["estoque", id],
+    queryFn: () => getEstoqueByProdutoId(id),
+    enabled: !!id,
+  });
+};
+
+
 export const useUpdateEstoque = () => {
   const queryClient = useQueryClient();
   return useMutation<EstoqueItem, Error, UpdateEstoquePayload>({
     mutationFn: updateEstoque,
     onSuccess: () => {
-      // Invalida a lista de estoque e também de produtos, 
-      // caso o produto exiba a quantidade em algum lugar
       queryClient.invalidateQueries({ queryKey: ["estoque"] });
       queryClient.invalidateQueries({ queryKey: ["produtos"] });
     },

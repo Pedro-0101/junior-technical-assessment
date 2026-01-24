@@ -3,8 +3,8 @@ import * as z from "zod";
 
 // Zod Schemas
 export const createEstoqueMovimentacaoSchema = z.object({
-    product_id: z.string(),
-    quantidade: z.number().min(0, "A quantidade não pode ser negativa"),
+    produto_id: z.string(),
+    quantidade: z.coerce.number().min(0, "A quantidade não pode ser negativa"),
     tipo: z.enum(["entrada", "saida"]),
 });
 
@@ -23,7 +23,6 @@ export type EstoqueMovimentacao = {
 
 export type CreateEstoqueMovimentacaoPayload = z.infer<typeof createEstoqueMovimentacaoSchema>;
 
-// API Functions
 const fetchEstoqueMovimentacoes = async (): Promise<EstoqueMovimentacao[]> => {
     const response = await fetch("/api/estoque-movimentacoes");
     if (!response.ok) {
@@ -51,7 +50,7 @@ const createEstoqueMovimentacao = async (
 
 // React Query Hooks
 export const useEstoqueMovimentacoes = () => {
-    return useQuery<EstoqueMovimentacao[], Error>({
+    return useQuery({
         queryKey: ["estoque-movimentacoes"],
         queryFn: fetchEstoqueMovimentacoes,
     });
@@ -59,10 +58,11 @@ export const useEstoqueMovimentacoes = () => {
 
 export const useCreateEstoqueMovimentacao = () => {
     const queryClient = useQueryClient();
-    return useMutation<EstoqueMovimentacao, Error, CreateEstoqueMovimentacaoPayload>({
+    return useMutation({
         mutationFn: createEstoqueMovimentacao,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["estoque-movimentacoes"] });
+            queryClient.invalidateQueries({ queryKey: ["estoque"] });
         },
     });
 };

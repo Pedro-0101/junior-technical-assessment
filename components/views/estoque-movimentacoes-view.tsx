@@ -1,16 +1,16 @@
 "use client"
 
 import { useState } from "react"
-import { useEstoqueMovimentacoes, EstoqueMovimentacao } from "@/hooks/use-estoque-movimentacoes"
+import { useEstoqueMovimentacoes } from "@/hooks/use-estoque-movimentacoes"
 import { DataTable } from "@/components/custom/data-table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { estoqueMovimentacaoColumns } from "../estoque_movimentacoes/estoque-movimentacoes-columns"
+import { AddEstoqueMovimentacaoModal } from "../estoque_movimentacoes/estoque-movimentacao-add-modal"
 
 export function EstoqueMovimentacoesView() {
     const { data: estoqueMovimentacoes, isLoading, isError, error } = useEstoqueMovimentacoes();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [selectedEstoqueMovimentacao, setSelectedEstoqueMovimentacao] = useState<EstoqueMovimentacao | null>(null);
 
     if (isError) {
         return (
@@ -30,9 +30,13 @@ export function EstoqueMovimentacoesView() {
                 }
                 actionButtons={[
                     <Button key="new-estoqueMovimentacao" onClick={() => setIsAddModalOpen(true)}>
-                        Novo EstoqueMovimentacao
+                        Cadastrar Movimentação
                     </Button>,
                 ]}
+            />
+            <AddEstoqueMovimentacaoModal 
+                isOpen={isAddModalOpen} 
+                onClose={() => setIsAddModalOpen(false)} 
             />
         </>
     );
