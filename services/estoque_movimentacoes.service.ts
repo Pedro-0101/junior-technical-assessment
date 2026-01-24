@@ -6,6 +6,10 @@ export const getAllEstoqueMovimentacoes = async (): Promise<estoque_movimentacoe
   return repository.findAll();
 };
 
+export const getAllEstoqueMovimentacoesWithProdutos = async (): Promise<estoque_movimentacoes[]> => {
+  return repository.findAllWithProdutos();
+};
+
 export const getEstoqueMovimentacoesById = async (id: bigint): Promise<estoque_movimentacoes | null> => {
     return repository.findById(id);
 };

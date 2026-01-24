@@ -10,16 +10,16 @@ export const estoqueColumns: ColumnDef<EstoqueItem>[] = [
     header: "ID",
   },
   {
-    accessorKey: "produto.nome",
-    header: "Produto",
-  },
-  {
     accessorKey: "produto.sku",
     header: "SKU",
   },
   {
+    accessorKey: "produto.nome",
+    header: "Produto",
+  },
+  {
     accessorKey: "quantidade",
-    header: "Quantidade",
+    header: "Estoque Atual",
   },
   {
     accessorKey: "produto.estoque_minimo",

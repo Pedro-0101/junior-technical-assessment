@@ -11,7 +11,11 @@ export const createEstoqueMovimentacaoSchema = z.object({
 // Types
 export type EstoqueMovimentacao = {
     id: string;
-    produto_id: string;
+    produto: {
+        id: string;
+        sku: string;
+        nome: string;
+    };
     quantidade: number;
     tipo: "entrada" | "saida";
     criado_em: string;

@@ -5,6 +5,20 @@ export const findAll = async (): Promise<estoque_movimentacoes[]> => {
     return prisma.estoque_movimentacoes.findMany();
 };
 
+export const findAllWithProdutos = async () => {
+    return prisma.estoque_movimentacoes.findMany({
+        include: {
+            produtos: {
+                select: {
+                    id: true,
+                    sku: true,
+                    nome: true,
+                }
+            },
+        },
+    });
+};
+
 export const findById = async (id: bigint): Promise<estoque_movimentacoes | null> => {
     return prisma.estoque_movimentacoes.findUnique({
         where: { id },

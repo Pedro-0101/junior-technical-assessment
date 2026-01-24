@@ -2,15 +2,29 @@ import { NextResponse } from "next/server";
 import * as service from "@/services/estoque_movimentacoes.service";
 
 export async function GET() {
-    const estoque_movimentacoes = await service.getAllEstoqueMovimentacoes();
-    const estoque_movimentacoesSerialized = estoque_movimentacoes.map(estoque_movimentacoes => {
-        return JSON.parse(
-            JSON.stringify(estoque_movimentacoes, (key, value) =>
-                typeof value === 'bigint' ? value.toString() : value
-            )
-        );
-    });
-    return NextResponse.json(estoque_movimentacoesSerialized);
+    try {
+        const movimentacoes = await service.getAllEstoqueMovimentacoesWithProdutos();
+
+        const estoque_movimentacoesSerialized = movimentacoes.map((item) => {
+            const movimentacao = {
+                id: item.id.toString(),
+                produto: {
+                    id: item.produtos.id.toString(),
+                    sku: item.produtos.sku,
+                    nome: item.produtos.nome,
+                },
+                quantidade: item.quantidade,
+                tipo: item.tipo as "entrada" | "saida", // Cast para o seu Enum
+                criado_em: item.criado_em?.toISOString() || new Date().toISOString(),
+            };
+            return movimentacao;
+        });
+
+        return NextResponse.json(estoque_movimentacoesSerialized);
+    } catch (error) {
+        console.error("Erro ao buscar movimentações:", error);
+        return NextResponse.json({ error: "Erro interno" }, { status: 500 });
+    }
 }
 
 export async function POST(request: Request) {

@@ -10,6 +10,10 @@ export const getEstoqueById = async (id: bigint): Promise<estoque | null> => {
   return repository.findById(id);
 };
 
+export const getAllEstoqueWithProdutos = async (): Promise<estoque[]> => {
+  return repository.getAllEstoqueWithProdutos();
+};
+
 export const createEstoque = async (data: Omit<estoque, 'id' | 'atualizado_em'>): Promise<estoque> => {
   const { produto_id, quantidade } = data;
 

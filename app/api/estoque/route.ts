@@ -2,15 +2,27 @@ import { NextResponse } from "next/server";
 import * as service from "@/services/estoque.service";
 
 export async function GET() {
-    const estoque = await service.getAllEstoque();
-    const estoqueSerialized = estoque.map(estoque => {
-        return JSON.parse(
-            JSON.stringify(estoque, (key, value) =>
-                typeof value === 'bigint' ? value.toString() : value
-            )
-        );
-    });
+  try {
+    const estoque = await service.getAllEstoqueWithProdutos();
+    const estoqueSerialized = estoque
+      .filter(item => item.produtos) 
+      .map((item) => ({
+        id: item.id.toString(),
+        produto_id: item.produto_id.toString(),
+        quantidade: item.quantidade,
+        atualizado_em: item.atualizado_em,
+        produto: {
+          sku: item.produtos.sku,
+          nome: item.produtos.nome,
+          estoque_minimo: item.produtos.estoque_minimo,
+        }
+      }));
+
     return NextResponse.json(estoqueSerialized);
+  } catch (error) {
+    console.error("Erro na rota GET estoque:", error);
+    return NextResponse.json({ error: "Erro interno no servidor" }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
