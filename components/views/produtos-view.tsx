@@ -16,9 +16,8 @@ export function ProdutosView() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Produto | null>(null);
-  const [productIdToDelete, setProductIdToDelete] = useState<string | null>(
-    null,
-  );
+  const [productIdToDelete, setProductIdToDelete] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleEdit = (id: string) => {
     const productToEdit = produtos?.find((prod) => prod.id === id);
@@ -49,9 +48,6 @@ export function ProdutosView() {
         onEdit={handleEdit}
         onDelete={handleDelete}
         isLoading={isLoading}
-        searchComponent={
-          <Input placeholder="Buscar produtos..." className="max-w-sm" />
-        }
         actionButtons={[
           <Button key="new-product" onClick={() => setIsAddModalOpen(true)}>
             Novo Produto
