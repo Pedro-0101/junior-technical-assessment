@@ -44,6 +44,13 @@ export function AddProductModal({
       options: categoryOptions,
     },
     {
+      name: "estoque_atual" as const,
+      label: "Estoque Atual",
+      placeholder: "0",
+      type: "number",
+      component: "input" as const,
+    },
+    {
       name: "estoque_minimo" as const,
       label: "Estoque Mínimo",
       placeholder: "0",
@@ -85,6 +92,7 @@ export function AddProductModal({
           nome: "",
           sku: "",
           categoria_id: "",
+          estoque_atual: 0,
           estoque_minimo: 0,
           marca: "",
         }}

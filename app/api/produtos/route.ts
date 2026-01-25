@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import * as service from '@/services/produtos.service';
+import * as estoqueService from '@/services/estoque.service';
 
 export async function GET() {
   try {
@@ -19,24 +20,26 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { sku, nome, categoria_id, estoque_minimo, marca } = body;
+    const { sku, nome, categoria_id, estoque_atual, estoque_minimo, marca } = body;
 
-    if (!sku || !nome) {
-      return NextResponse.json({ error: 'SKU e Nome são obrigatórios' }, { status: 400 });
+    if (!sku || !nome || !categoria_id) {
+      return NextResponse.json({ error: 'Os campos SKU, Nome e Categoria são obrigatórios' }, { status: 400 });
     }
 
     const newProduto = await service.createProduto({
       sku,
       nome,
       categoria_id: categoria_id ? BigInt(categoria_id) : null,
-      estoque_minimo,
+      estoque_minimo: estoque_minimo ?? 0,
       marca,
-    });
+    }, estoque_atual);
+
     const newProdutoSerialized = JSON.parse(
       JSON.stringify(newProduto, (key, value) =>
         typeof value === 'bigint' ? value.toString() : value
       )
     );
+    
     return NextResponse.json(newProdutoSerialized, { status: 201 });
   } catch (error) {
     console.error(error);

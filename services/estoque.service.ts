@@ -16,6 +16,7 @@ export const getAllEstoqueWithProdutos = async (): Promise<estoque[]> => {
 
 export const createEstoque = async (data: Omit<estoque, 'id' | 'atualizado_em'>): Promise<estoque> => {
   const { produto_id, quantidade } = data;
+  console.log('Creating estoque with data:', data);
 
   if (!produto_id || !quantidade) {
     throw new Error('Produto ID e quantidade são obrigatórios');
@@ -25,7 +26,7 @@ export const createEstoque = async (data: Omit<estoque, 'id' | 'atualizado_em'>)
     throw new Error('Quantidade deve ser maior que zero');
   }
 
-  const produto = produtoService.getProdutoById(produto_id);
+  const produto = await produtoService.getProdutoById(produto_id);
   if (!produto) {
     throw new Error('Produto não encontrado');
   }

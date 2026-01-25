@@ -5,7 +5,8 @@ import * as z from "zod";
 export const createProdutoSchema = z.object({
   nome: z.string().min(1, "Nome é obrigatório"),
   sku: z.string().min(1, "SKU é obrigatório"),
-  categoria_id: z.string().optional(),
+  categoria_id: z.string(),
+  estoque_atual: z.coerce.number().int().min(0, "Estoque atual não pode ser negativo").optional(),
   estoque_minimo: z.coerce.number().int().min(0, "Estoque mínimo não pode ser negativo").optional(),
   marca: z.string().optional(),
 });
@@ -21,7 +22,7 @@ export const updateProdutoSchema = z.object({
 
 // Types
 export type Produto = {
-  id: string; // Prisma BigInt is serialized as string
+  id: string;
   categoria_id: string | null;
   sku: string;
   nome: string;
